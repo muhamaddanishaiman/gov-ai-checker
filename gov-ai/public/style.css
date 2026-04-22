@@ -1,0 +1,55 @@
+body {
+    font-family: Arial;
+    background: #f7f5f2;
+    text-align: center;
+}
+
+.navbar {
+    background: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.container {
+    margin-top: 80px;
+}
+
+h1 {
+    font-size: 32px;
+    color: #1b4332;
+}
+
+p {
+    color: #666;
+}
+
+.upload-box {
+    margin-top: 30px;
+    padding: 40px;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    background: white;
+    display: inline-block;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #1b4332;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2d6a4f;
+}
+
+#result {
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    display: inline-block;
+}
