@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
@@ -70,9 +70,28 @@
                 Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.
             </p>
 
-            <!-- Upload Card -->
+            <!-- Main Card -->
             <div class="card-bg p-8 md:p-12 rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-black/5 w-full max-w-[42rem] relative">
                 
+                <!-- Checklist Tracker -->
+                <div class="mb-10 p-6 bg-white rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg mb-1">Application Status</h3>
+                        <p class="text-sm text-gray-500">Ensure all required documents are valid</p>
+                    </div>
+                    <div class="flex flex-col gap-3 w-full md:w-auto bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="ic-status">❌</div>
+                            <span class="font-medium text-gray-700 text-sm">Identity Card (IC)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="salary-status">❌</div>
+                            <span class="font-medium text-gray-700 text-sm">Salary Slip</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Section -->
                 <label for="fileInput" id="dropzone" class="border-2 border-dashed border-[#D1CCC1] rounded-2xl p-10 mb-8 flex flex-col items-center justify-center bg-transparent transition-colors hover:bg-black/[0.02] cursor-pointer group">
                     <div class="bg-white p-3 rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -151,6 +170,20 @@
                 let issuesHtml = data.issues && data.issues.length ? `<ul class="list-disc pl-5 mt-1 text-red-600">` + data.issues.map(i => `<li>${i}</li>`).join('') + `</ul>` : '<p class="text-gray-500 italic mt-1">None</p>';
                 let suggestionsHtml = data.suggestions && data.suggestions.length ? `<ul class="list-disc pl-5 mt-1 text-amber-600">` + data.suggestions.map(s => `<li>${s}</li>`).join('') + `</ul>` : '<p class="text-gray-500 italic mt-1">None</p>';
                 let validityColor = data.valid ? 'text-green-600' : 'text-red-600';
+
+                // Update Checklist UI
+                if (data.valid) {
+                    let docType = (data.document_type || '').toLowerCase();
+                    if (docType.includes('ic') || docType.includes('identity')) {
+                        const icStatus = document.getElementById('ic-status');
+                        icStatus.innerText = '✅';
+                        icStatus.classList.replace('bg-gray-200', 'bg-green-100');
+                    } else if (docType.includes('salary')) {
+                        const salaryStatus = document.getElementById('salary-status');
+                        salaryStatus.innerText = '✅';
+                        salaryStatus.classList.replace('bg-gray-200', 'bg-green-100');
+                    }
+                }
 
                 resultDiv.innerHTML = `
                     <h3 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Analysis Result</h3>

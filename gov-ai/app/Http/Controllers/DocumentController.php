@@ -10,9 +10,14 @@ class DocumentController extends Controller
     public function check(Request $request, GeminiService $gemini)
     {
         $file = $request->file('document');
-        $base64 = base64_encode(file_get_contents($file));
+        if (!$file) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
 
-        $response = $gemini->analyze($base64);
+        $base64 = base64_encode(file_get_contents($file));
+        $mimeType = $file->getMimeType();
+
+        $response = $gemini->analyze($base64, $mimeType);
 
         return response()->json($response);
     }
