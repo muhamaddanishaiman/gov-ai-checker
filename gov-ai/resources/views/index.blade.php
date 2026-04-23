@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Gov AI Checker</title>
+        <title>Ai Document Checker</title>
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,12 +52,10 @@
                 <svg viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 text-brand-green">
                   <path d="M2 6C2 4.89543 2.89543 4 4 4H10.5C11.3284 4 12 4.67157 12 5.5V19.5C12 18.6716 11.3284 18 10.5 18H4C2.89543 18 2 17.1046 2 16V6ZM13.5 4H20C21.1046 4 22 4.89543 22 6V16C22 17.1046 21.1046 18 20 18H13.5C12.6716 18 12 18.6716 12 19.5V5.5C12 4.67157 12.6716 4 13.5 4Z"/>
                 </svg>
-                <span class="font-bold text-xl tracking-tight text-brand-green">Gov AI Checker</span>
+                <span class="font-bold text-xl tracking-tight text-brand-green">Ai Document Checker</span>
             </div>
             <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-500 items-center">
                 <a href="#" class="text-brand-green">Home</a>
-                <a href="#" class="hover:text-brand-green transition-colors">Learn</a>
-                <a href="#" class="hover:text-brand-green transition-colors">About</a>
                 
                 <!-- Language Switcher -->
                 <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-full border border-gray-200 ml-4">
@@ -70,7 +68,7 @@
         <!-- Main Content -->
         <main class="w-full max-w-4xl flex flex-col items-center mt-20 mb-16 text-center z-10">
             <h1 id="mainTitle" class="text-5xl md:text-[4.5rem] font-serif font-semibold tracking-tight mb-6 leading-[1.05] text-brand-green">
-                Validate Your<br/> Bantuan Documents
+                Ai Document<br/> Checker
             </h1>
             <p id="mainSubtitle" class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl leading-relaxed">
                 Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.
@@ -126,6 +124,33 @@
                 <!-- Result Display Area -->
                 <div id="result" class="mt-8 text-left hidden p-6 bg-white rounded-2xl shadow-sm border border-black/5"></div>
             </div>
+
+            <!-- Features / How it Works -->
+            <div class="mt-24 grid md:grid-cols-3 gap-8 w-full text-left">
+                <div class="bg-white/50 backdrop-blur-sm p-8 rounded-3xl border border-black/5">
+                    <div class="w-12 h-12 bg-brand-green/10 rounded-2xl flex items-center justify-center text-brand-green mb-6 font-bold text-xl">1</div>
+                    <h3 id="step1Title" class="font-bold text-lg mb-3 text-brand-green">Select Language</h3>
+                    <p id="step1Desc" class="text-gray-600 text-sm leading-relaxed">Choose between English or Bahasa Melayu for your interface and analysis report.</p>
+                </div>
+                <div class="bg-white/50 backdrop-blur-sm p-8 rounded-3xl border border-black/5">
+                    <div class="w-12 h-12 bg-brand-green/10 rounded-2xl flex items-center justify-center text-brand-green mb-6 font-bold text-xl">2</div>
+                    <h3 id="step2Title" class="font-bold text-lg mb-3 text-brand-green">Upload Document</h3>
+                    <p id="step2Desc" class="text-gray-600 text-sm leading-relaxed">Securely upload your IC or Salary Slip. We process your data privately and do not store it.</p>
+                </div>
+                <div class="bg-white/50 backdrop-blur-sm p-8 rounded-3xl border border-black/5">
+                    <div class="w-12 h-12 bg-brand-green/10 rounded-2xl flex items-center justify-center text-brand-green mb-6 font-bold text-xl">3</div>
+                    <h3 id="step3Title" class="font-bold text-lg mb-3 text-brand-green">Get AI Analysis</h3>
+                    <p id="step3Desc" class="text-gray-600 text-sm leading-relaxed">Our AI identifies the document type, checks for validity, and provides helpful suggestions.</p>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="mt-24 max-w-2xl">
+                <h2 id="aboutTitle" class="text-3xl font-serif font-semibold text-brand-green mb-6">About the System</h2>
+                <p id="aboutText" class="text-gray-600 leading-relaxed">
+                    Ai Document Checker is designed to assist Malaysian citizens in preparing their documents for various government assistance (Bantuan) programs. Using advanced AI, we help you spot potential issues before you submit your application, increasing your chances of success.
+                </p>
+            </div>
         </main>
 
         <script>
@@ -133,7 +158,7 @@
         
         const translations = {
             en: {
-                title: 'Validate Your<br/> Bantuan Documents',
+                title: 'Ai Document<br/> Checker',
                 subtitle: 'Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.',
                 statusTitle: 'Application Status',
                 statusDesc: 'Ensure all required documents are valid',
@@ -153,10 +178,18 @@
                 issues: 'Issues',
                 suggestions: 'Suggestions',
                 error: 'An error occurred during analysis. Please try again.',
-                selectFirst: 'Please select a file first.'
+                selectFirst: 'Please select a file first.',
+                step1Title: 'Select Language',
+                step1Desc: 'Choose between English or Bahasa Melayu for your interface and analysis report.',
+                step2Title: 'Upload Document',
+                step2Desc: 'Securely upload your IC or Salary Slip. We process your data privately and do not store it.',
+                step3Title: 'Get AI Analysis',
+                step3Desc: 'Our AI identifies the document type, checks for validity, and provides helpful suggestions.',
+                aboutTitle: 'About the System',
+                aboutText: 'Ai Document Checker is designed to assist Malaysian citizens in preparing their documents for various government assistance (Bantuan) programs. Using advanced AI, we help you spot potential issues before you submit your application, increasing your chances of success.'
             },
             bm: {
-                title: 'Sahkan Dokumen<br/> Bantuan Anda',
+                title: 'Pemeriksa Dokumen<br/> Ai',
                 subtitle: 'Muat naik kad pengenalan atau penyata gaji anda untuk analisis AI segera tentang maklumat yang mungkin bermasalah.',
                 statusTitle: 'Status Permohonan',
                 statusDesc: 'Pastikan semua dokumen yang diperlukan adalah sah',
@@ -176,7 +209,15 @@
                 issues: 'Isu',
                 suggestions: 'Cadangan',
                 error: 'Ralat berlaku semasa analisis. Sila cuba lagi.',
-                selectFirst: 'Sila pilih fail terlebih dahulu.'
+                selectFirst: 'Sila pilih fail terlebih dahulu.',
+                step1Title: 'Pilih Bahasa',
+                step1Desc: 'Pilih antara Bahasa Inggeris atau Bahasa Melayu untuk antaramuka dan laporan analisis anda.',
+                step2Title: 'Muat Naik Dokumen',
+                step2Desc: 'Muat naik IC atau Slip Gaji anda dengan selamat. Kami memproses data anda secara peribadi dan tidak menyimpannya.',
+                step3Title: 'Dapatkan Analisis AI',
+                step3Desc: 'AI kami mengenal pasti jenis dokumen, menyemak kesahan, dan memberikan cadangan yang membantu.',
+                aboutTitle: 'Mengenai Sistem',
+                aboutText: 'Pemeriksa Dokumen Ai direka untuk membantu rakyat Malaysia dalam menyediakan dokumen mereka untuk pelbagai program bantuan kerajaan (Bantuan). Menggunakan AI canggih, kami membantu anda mengenal pasti isu berpotensi sebelum anda menghantar permohonan anda, meningkatkan peluang kejayaan anda.'
             }
         };
 
@@ -194,6 +235,16 @@
             document.getElementById('fileLimit').innerText = t.fileLimit;
             document.getElementById('btnText').innerText = t.analyzeBtn;
             document.getElementById('privacyLink').innerText = t.privacy;
+
+            // Update new sections
+            document.getElementById('step1Title').innerText = t.step1Title;
+            document.getElementById('step1Desc').innerText = t.step1Desc;
+            document.getElementById('step2Title').innerText = t.step2Title;
+            document.getElementById('step2Desc').innerText = t.step2Desc;
+            document.getElementById('step3Title').innerText = t.step3Title;
+            document.getElementById('step3Desc').innerText = t.step3Desc;
+            document.getElementById('aboutTitle').innerText = t.aboutTitle;
+            document.getElementById('aboutText').innerText = t.aboutText;
             
             // Update button styles
             const enBtn = document.getElementById('enBtn');
