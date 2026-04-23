@@ -1,32 +1,12 @@
 # ==============================================================================
-# Stage 1: Build frontend assets
-# ==============================================================================
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /app
-
-# Copy package files first for better caching
-COPY gov-ai/package.json gov-ai/package-lock.json ./
-RUN npm ci
-
-# Copy frontend source files
-COPY gov-ai/vite.config.js ./
-COPY gov-ai/resources/ ./resources/
-
-# Build Vite assets
-RUN npm run build
-
-# ==============================================================================
-# Stage 2: Install PHP dependencies
+# Stage 1: Install PHP dependencies
 # ==============================================================================
 FROM composer:2 AS composer-builder
 
 WORKDIR /app
 
-# Copy composer files
 COPY gov-ai/composer.json gov-ai/composer.lock ./
 
-# Install dependencies without dev packages
 RUN composer install \
     --no-dev \
     --no-interaction \
@@ -34,9 +14,30 @@ RUN composer install \
     --prefer-dist \
     --optimize-autoloader
 
-# Copy full app for post-install scripts
 COPY gov-ai/ .
 RUN composer dump-autoload --optimize --no-dev
+
+# ==============================================================================
+# Stage 2: Build frontend assets
+# ==============================================================================
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /app
+
+COPY gov-ai/package.json gov-ai/package-lock.json ./
+RUN npm ci
+
+COPY gov-ai/vite.config.js ./
+COPY gov-ai/resources/ ./resources/
+
+# Tailwind CSS v4 scans vendor for blade pagination views (app.css line 3)
+# Copy the vendor from composer stage so Tailwind can find the source files
+COPY --from=composer-builder /app/vendor ./vendor
+
+# Also need storage/framework/views for Tailwind source scanning (app.css line 4)
+RUN mkdir -p storage/framework/views
+
+RUN npm run build
 
 # ==============================================================================
 # Stage 3: Production image
@@ -55,10 +56,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd pdo pdo_sqlite zip bcmath opcache \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# Enable Apache modules
 RUN a2enmod rewrite headers
 
-# Configure Apache to use Laravel's public directory
+# Configure Apache document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
@@ -66,41 +67,42 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Allow .htaccess overrides
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Set default PORT for Apache (will be overridden at runtime by entrypoint)
+# Default port (overridden at runtime by entrypoint)
 RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 ENV PORT=8080
 
-# Configure PHP for production
+# PHP production config
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY gov-ai/docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy application code from gov-ai/
+# Copy Laravel app
 COPY gov-ai/ .
 
-# Copy built frontend assets from Stage 1
-COPY --from=frontend-builder /app/public/build ./public/build
-
-# Copy PHP vendor dependencies from Stage 2
+# Copy vendor from composer stage
 COPY --from=composer-builder /app/vendor ./vendor
 
-# Create required Laravel directories
+# Copy built Vite assets from frontend stage
+COPY --from=frontend-builder /app/public/build ./public/build
+
+# Create required directories
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     storage/logs \
     bootstrap/cache \
     database
 
+# Create SQLite database
+RUN touch database/database.sqlite
+
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache database
 RUN chmod -R 775 storage bootstrap/cache database
 
-# Copy and set up entrypoint script
+# Copy entrypoint and fix Windows CRLF line endings
 COPY gov-ai/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 8080
 
-# Use entrypoint script (handles migrations, caching with runtime env vars)
 CMD ["/usr/local/bin/entrypoint.sh"]
