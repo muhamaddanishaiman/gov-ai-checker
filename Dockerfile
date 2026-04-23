@@ -66,8 +66,8 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Allow .htaccess overrides
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Configure Apache to listen on Cloud Run's PORT (default 8080)
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# Set default PORT for Apache (will be overridden at runtime by entrypoint)
+RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 ENV PORT=8080
 
 # Configure PHP for production
@@ -92,27 +92,15 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
     bootstrap/cache \
     database
 
-# Create SQLite database file
-RUN touch database/database.sqlite
-
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache database
 RUN chmod -R 775 storage bootstrap/cache database
 
-# Generate optimized config/routes/views cache
-RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
-
-# Run database migrations
-RUN php artisan migrate --force
-
-# Cache configuration for production performance
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Copy and set up entrypoint script
+COPY gov-ai/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 8080
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Use entrypoint script (handles migrations, caching with runtime env vars)
+CMD ["/usr/local/bin/entrypoint.sh"]
