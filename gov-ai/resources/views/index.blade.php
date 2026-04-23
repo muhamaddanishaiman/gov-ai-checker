@@ -52,15 +52,15 @@
                 <svg viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 text-brand-green">
                   <path d="M2 6C2 4.89543 2.89543 4 4 4H10.5C11.3284 4 12 4.67157 12 5.5V19.5C12 18.6716 11.3284 18 10.5 18H4C2.89543 18 2 17.1046 2 16V6ZM13.5 4H20C21.1046 4 22 4.89543 22 6V16C22 17.1046 21.1046 18 20 18H13.5C12.6716 18 12 18.6716 12 19.5V5.5C12 4.67157 12.6716 4 13.5 4Z"/>
                 </svg>
-                <span class="font-bold text-xl tracking-tight text-brand-green">Ai Document Checker</span>
+                <span class="font-bold text-xl tracking-tight text-brand-green">Pemeriksa Dokumen Ai</span>
             </div>
             <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-500 items-center">
                 <a href="#" class="text-brand-green">Home</a>
                 
                 <!-- Language Switcher -->
                 <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-full border border-gray-200 ml-4">
-                    <button onclick="setLanguage('en')" id="enBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold bg-white shadow-sm text-brand-green">EN</button>
-                    <button onclick="setLanguage('bm')" id="bmBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold text-gray-400 hover:text-gray-600">BM</button>
+                    <button onclick="setLanguage('en')" id="enBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold text-gray-400 hover:text-gray-600">EN</button>
+                    <button onclick="setLanguage('bm')" id="bmBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold bg-white shadow-sm text-brand-green">BM</button>
                 </div>
             </div>
         </nav>
@@ -68,10 +68,10 @@
         <!-- Main Content -->
         <main class="w-full max-w-4xl flex flex-col items-center mt-20 mb-16 text-center z-10">
             <h1 id="mainTitle" class="text-5xl md:text-[4.5rem] font-serif font-semibold tracking-tight mb-6 leading-[1.05] text-brand-green">
-                Ai Document<br/> Checker
+                Pemeriksa Dokumen<br/> Ai
             </h1>
             <p id="mainSubtitle" class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl leading-relaxed">
-                Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.
+                Muat naik kad pengenalan atau penyata gaji anda untuk analisis AI segera tentang maklumat yang mungkin bermasalah.
             </p>
 
             <!-- Main Card -->
@@ -80,17 +80,17 @@
                 <!-- Checklist Tracker -->
                 <div class="mb-10 p-6 bg-white rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
                     <div>
-                        <h3 id="statusTitle" class="font-bold text-gray-900 text-lg mb-1">Application Status</h3>
-                        <p id="statusDesc" class="text-sm text-gray-500">Ensure all required documents are valid</p>
+                        <h3 id="statusTitle" class="font-bold text-gray-900 text-lg mb-1">Status Permohonan</h3>
+                        <p id="statusDesc" class="text-sm text-gray-500">Pastikan semua dokumen yang diperlukan adalah sah</p>
                     </div>
                     <div class="flex flex-col gap-3 w-full md:w-auto bg-gray-50 p-3 rounded-xl border border-gray-100">
                         <div class="flex items-center gap-3">
                             <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="ic-status">❌</div>
-                            <span id="icLabel" class="font-medium text-gray-700 text-sm">Identity Card (IC)</span>
+                            <span id="icLabel" class="font-medium text-gray-700 text-sm">Kad Pengenalan (IC)</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="salary-status">❌</div>
-                            <span id="salaryLabel" class="font-medium text-gray-700 text-sm">Salary Slip</span>
+                            <span id="salaryLabel" class="font-medium text-gray-700 text-sm">Penyata Gaji</span>
                         </div>
                     </div>
                 </div>
@@ -103,22 +103,22 @@
                         </svg>
                     </div>
                     <p class="text-gray-800 font-medium mb-1 text-lg" id="fileLabelText">
-                        Drop your document PDF/Image <span class="font-normal text-gray-500">or click to browse</span>
+                        Letakkan PDF/Imej dokumen anda <span class="font-normal text-gray-500">atau klik untuk cari</span>
                     </p>
-                    <p id="fileLimit" class="text-sm text-gray-400">Files up to 15 MB</p>
+                    <p id="fileLimit" class="text-sm text-gray-400">Fail sehingga 15 MB</p>
                 </label>
                 
                 <input type="file" id="fileInput" onchange="updateFileName()">
 
                 <button id="analyzeBtn" onclick="uploadFile()" class="bg-brand-green w-full py-4 rounded-full text-white text-lg font-medium transition-transform active:scale-[0.98] flex justify-center items-center gap-2 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="btnText">Analyze Document</span>
+                    <span id="btnText">Analisis Dokumen</span>
                     <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </button>
 
                 <p class="text-xs text-gray-400 mt-6 font-medium tracking-wide">
-                    Free · No account required · Secure processing · <a href="#" id="privacyLink" class="underline hover:text-gray-600">Privacy</a>
+                    Percuma · Tiada akaun diperlukan · Pemprosesan selamat · <a href="#" id="privacyLink" class="underline hover:text-gray-600">Privasi</a>
                 </p>
 
                 <!-- Result Display Area -->
@@ -154,7 +154,7 @@
         </main>
 
         <script>
-        let currentLang = 'en';
+        let currentLang = 'bm';
         
         const translations = {
             en: {
@@ -365,6 +365,9 @@
                 btnIcon.classList.remove('hidden');
             }
         }
+        
+        // Initialize with default language
+        setLanguage(currentLang);
         </script>
     </body>
 </html>
