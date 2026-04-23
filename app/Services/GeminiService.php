@@ -6,22 +6,26 @@ use Illuminate\Support\Facades\Http;
 
 class GeminiService
 {
-    public function analyze($base64)
+    public function analyze($base64, $mimeType = 'image/jpeg', $lang = 'en')
     {
         $apiKey = env('GEMINI_API_KEY');
 
+        $langPrompt = $lang === 'bm' 
+            ? "Provide the document_type, issues, and suggestions in Bahasa Melayu." 
+            : "Provide the document_type, issues, and suggestions in English.";
+
         $response = Http::post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key={$apiKey}",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}",
             [
                 "contents" => [
                     [
                         "parts" => [
                             [
-                                "text" => "You are an AI bantuan document validator. Identify document type (IC or Salary Slip), validate it, and return JSON with document_type, valid, issues, suggestions."
+                                "text" => "You are an AI bantuan document validator. Identify document type (IC or Salary Slip), validate it, and return ONLY a valid JSON object with document_type (string), valid (boolean), issues (array of strings), suggestions (array of strings). Do not use markdown blocks. {$langPrompt}"
                             ],
                             [
                                 "inline_data" => [
-                                    "mime_type" => "image/jpeg",
+                                    "mime_type" => $mimeType,
                                     "data" => $base64
                                 ]
                             ]
@@ -31,6 +35,26 @@ class GeminiService
             ]
         );
 
-        return $response->json();
+        $data = $response->json();
+
+        if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+            $jsonString = $data['candidates'][0]['content']['parts'][0]['text'];
+            
+            // Clean markdown wrappers if any
+            $jsonString = str_replace(['```json', '```'], '', $jsonString);
+            $jsonString = trim($jsonString);
+
+            $decoded = json_decode($jsonString, true);
+            if ($decoded) {
+                return $decoded;
+            }
+        }
+
+        return [
+            "document_type" => "Unknown",
+            "valid" => false,
+            "issues" => ["AI response format error or no text returned.", json_encode($data)],
+            "suggestions" => ["Try again later."]
+        ];
     }
 }

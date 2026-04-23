@@ -6,9 +6,13 @@ use Illuminate\Support\Facades\Http;
 
 class GeminiService
 {
-    public function analyze($base64, $mimeType = 'image/jpeg')
+    public function analyze($base64, $mimeType = 'image/jpeg', $lang = 'en')
     {
         $apiKey = env('GEMINI_API_KEY');
+
+        $langPrompt = $lang === 'bm' 
+            ? "Provide the document_type, issues, and suggestions in Bahasa Melayu." 
+            : "Provide the document_type, issues, and suggestions in English.";
 
         // Added retry mechanism: retry 3 times, with 1000ms (1 second) wait between retries
         $response = Http::retry(3, 1000)->post(
@@ -18,7 +22,7 @@ class GeminiService
                     [
                         "parts" => [
                             [
-                                "text" => "You are an AI bantuan document validator. Identify document type (IC or Salary Slip), validate it, and return ONLY a valid JSON object with document_type (string), valid (boolean), issues (array of strings), suggestions (array of strings). Do not use markdown blocks."
+                                "text" => "You are an AI bantuan document validator. Identify document type (IC or Salary Slip), validate it, and return ONLY a valid JSON object with document_type (string), valid (boolean), issues (array of strings), suggestions (array of strings). Do not use markdown blocks. {$langPrompt}"
                             ],
                             [
                                 "inline_data" => [

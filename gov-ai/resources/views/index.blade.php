@@ -54,19 +54,25 @@
                 </svg>
                 <span class="font-bold text-xl tracking-tight text-brand-green">Gov AI Checker</span>
             </div>
-            <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-500">
+            <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-500 items-center">
                 <a href="#" class="text-brand-green">Home</a>
                 <a href="#" class="hover:text-brand-green transition-colors">Learn</a>
                 <a href="#" class="hover:text-brand-green transition-colors">About</a>
+                
+                <!-- Language Switcher -->
+                <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-full border border-gray-200 ml-4">
+                    <button onclick="setLanguage('en')" id="enBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold bg-white shadow-sm text-brand-green">EN</button>
+                    <button onclick="setLanguage('bm')" id="bmBtn" class="px-3 py-1 rounded-full text-xs transition-all duration-300 font-bold text-gray-400 hover:text-gray-600">BM</button>
+                </div>
             </div>
         </nav>
 
         <!-- Main Content -->
         <main class="w-full max-w-4xl flex flex-col items-center mt-20 mb-16 text-center z-10">
-            <h1 class="text-5xl md:text-[4.5rem] font-serif font-semibold tracking-tight mb-6 leading-[1.05] text-brand-green">
+            <h1 id="mainTitle" class="text-5xl md:text-[4.5rem] font-serif font-semibold tracking-tight mb-6 leading-[1.05] text-brand-green">
                 Validate Your<br/> Bantuan Documents
             </h1>
-            <p class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl leading-relaxed">
+            <p id="mainSubtitle" class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl leading-relaxed">
                 Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.
             </p>
 
@@ -76,17 +82,17 @@
                 <!-- Checklist Tracker -->
                 <div class="mb-10 p-6 bg-white rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
                     <div>
-                        <h3 class="font-bold text-gray-900 text-lg mb-1">Application Status</h3>
-                        <p class="text-sm text-gray-500">Ensure all required documents are valid</p>
+                        <h3 id="statusTitle" class="font-bold text-gray-900 text-lg mb-1">Application Status</h3>
+                        <p id="statusDesc" class="text-sm text-gray-500">Ensure all required documents are valid</p>
                     </div>
                     <div class="flex flex-col gap-3 w-full md:w-auto bg-gray-50 p-3 rounded-xl border border-gray-100">
                         <div class="flex items-center gap-3">
                             <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="ic-status">❌</div>
-                            <span class="font-medium text-gray-700 text-sm">Identity Card (IC)</span>
+                            <span id="icLabel" class="font-medium text-gray-700 text-sm">Identity Card (IC)</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full text-xs shadow-sm" id="salary-status">❌</div>
-                            <span class="font-medium text-gray-700 text-sm">Salary Slip</span>
+                            <span id="salaryLabel" class="font-medium text-gray-700 text-sm">Salary Slip</span>
                         </div>
                     </div>
                 </div>
@@ -101,7 +107,7 @@
                     <p class="text-gray-800 font-medium mb-1 text-lg" id="fileLabelText">
                         Drop your document PDF/Image <span class="font-normal text-gray-500">or click to browse</span>
                     </p>
-                    <p class="text-sm text-gray-400">Files up to 15 MB</p>
+                    <p id="fileLimit" class="text-sm text-gray-400">Files up to 15 MB</p>
                 </label>
                 
                 <input type="file" id="fileInput" onchange="updateFileName()">
@@ -114,7 +120,7 @@
                 </button>
 
                 <p class="text-xs text-gray-400 mt-6 font-medium tracking-wide">
-                    Free · No account required · Secure processing · <a href="#" class="underline hover:text-gray-600">Privacy</a>
+                    Free · No account required · Secure processing · <a href="#" id="privacyLink" class="underline hover:text-gray-600">Privacy</a>
                 </p>
 
                 <!-- Result Display Area -->
@@ -123,26 +129,116 @@
         </main>
 
         <script>
+        let currentLang = 'en';
+        
+        const translations = {
+            en: {
+                title: 'Validate Your<br/> Bantuan Documents',
+                subtitle: 'Upload your IC or Salary Slip for a free, instant AI analysis of potentially problematic information.',
+                statusTitle: 'Application Status',
+                statusDesc: 'Ensure all required documents are valid',
+                icLabel: 'Identity Card (IC)',
+                salaryLabel: 'Salary Slip',
+                dropText: 'Drop your document PDF/Image <span class="font-normal text-gray-500">or click to browse</span>',
+                fileLimit: 'Files up to 15 MB',
+                analyzeBtn: 'Analyze Document',
+                analyzing: 'Analyzing...',
+                privacy: 'Privacy',
+                selected: 'Selected',
+                resultTitle: 'Analysis Result',
+                detectedDoc: 'Detected Document',
+                validity: 'Validity',
+                valid: 'Valid',
+                invalid: 'Invalid',
+                issues: 'Issues',
+                suggestions: 'Suggestions',
+                error: 'An error occurred during analysis. Please try again.',
+                selectFirst: 'Please select a file first.'
+            },
+            bm: {
+                title: 'Sahkan Dokumen<br/> Bantuan Anda',
+                subtitle: 'Muat naik kad pengenalan atau penyata gaji anda untuk analisis AI segera tentang maklumat yang mungkin bermasalah.',
+                statusTitle: 'Status Permohonan',
+                statusDesc: 'Pastikan semua dokumen yang diperlukan adalah sah',
+                icLabel: 'Kad Pengenalan (IC)',
+                salaryLabel: 'Penyata Gaji',
+                dropText: 'Letakkan PDF/Imej dokumen anda <span class="font-normal text-gray-500">atau klik untuk cari</span>',
+                fileLimit: 'Fail sehingga 15 MB',
+                analyzeBtn: 'Analisis Dokumen',
+                analyzing: 'Menganalisis...',
+                privacy: 'Privasi',
+                selected: 'Dipilih',
+                resultTitle: 'Keputusan Analisis',
+                detectedDoc: 'Dokumen Dikesan',
+                validity: 'Kesahan',
+                valid: 'Sah',
+                invalid: 'Tidak Sah',
+                issues: 'Isu',
+                suggestions: 'Cadangan',
+                error: 'Ralat berlaku semasa analisis. Sila cuba lagi.',
+                selectFirst: 'Sila pilih fail terlebih dahulu.'
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            document.getElementById('mainTitle').innerHTML = t.title;
+            document.getElementById('mainSubtitle').innerText = t.subtitle;
+            document.getElementById('statusTitle').innerText = t.statusTitle;
+            document.getElementById('statusDesc').innerText = t.statusDesc;
+            document.getElementById('icLabel').innerText = t.icLabel;
+            document.getElementById('salaryLabel').innerText = t.salaryLabel;
+            document.getElementById('fileLabelText').innerHTML = t.dropText;
+            document.getElementById('fileLimit').innerText = t.fileLimit;
+            document.getElementById('btnText').innerText = t.analyzeBtn;
+            document.getElementById('privacyLink').innerText = t.privacy;
+            
+            // Update button styles
+            const enBtn = document.getElementById('enBtn');
+            const bmBtn = document.getElementById('bmBtn');
+            
+            if (lang === 'en') {
+                enBtn.classList.add('bg-white', 'shadow-sm', 'text-brand-green');
+                enBtn.classList.remove('text-gray-400');
+                bmBtn.classList.remove('bg-white', 'shadow-sm', 'text-brand-green');
+                bmBtn.classList.add('text-gray-400');
+            } else {
+                bmBtn.classList.add('bg-white', 'shadow-sm', 'text-brand-green');
+                bmBtn.classList.remove('text-gray-400');
+                enBtn.classList.remove('bg-white', 'shadow-sm', 'text-brand-green');
+                enBtn.classList.add('text-gray-400');
+            }
+            
+            // Clear result if any
+            document.getElementById('result').classList.add('hidden');
+        }
+
         function updateFileName() {
             const input = document.getElementById('fileInput');
             const label = document.getElementById('fileLabelText');
+            const t = translations[currentLang];
             if (input.files && input.files.length > 0) {
-                label.innerHTML = `Selected: <span class="font-semibold text-brand-green">${input.files[0].name}</span>`;
+                label.innerHTML = `${t.selected}: <span class="font-semibold text-brand-green">${input.files[0].name}</span>`;
             } else {
-                label.innerHTML = `Drop your document PDF/Image <span class="font-normal text-gray-500">or click to browse</span>`;
+                label.innerHTML = t.dropText;
             }
         }
 
         async function uploadFile() {
             const fileInput = document.getElementById('fileInput');
+            const t = translations[currentLang];
+            
             if (!fileInput.files || fileInput.files.length === 0) {
-                alert('Please select a file first.');
+                alert(t.selectFirst);
                 return;
             }
 
             const file = fileInput.files[0];
             const formData = new FormData();
             formData.append('document', file);
+            formData.append('lang', currentLang);
 
             const btn = document.getElementById('analyzeBtn');
             const btnText = document.getElementById('btnText');
@@ -151,7 +247,7 @@
 
             // Set loading state
             btn.disabled = true;
-            btnText.innerText = 'Analyzing...';
+            btnText.innerText = t.analyzing;
             btnIcon.classList.add('hidden');
             resultDiv.classList.add('hidden');
 
@@ -167,18 +263,18 @@
 
                 let data = await res.json();
                 
-                let issuesHtml = data.issues && data.issues.length ? `<ul class="list-disc pl-5 mt-1 text-red-600">` + data.issues.map(i => `<li>${i}</li>`).join('') + `</ul>` : '<p class="text-gray-500 italic mt-1">None</p>';
-                let suggestionsHtml = data.suggestions && data.suggestions.length ? `<ul class="list-disc pl-5 mt-1 text-amber-600">` + data.suggestions.map(s => `<li>${s}</li>`).join('') + `</ul>` : '<p class="text-gray-500 italic mt-1">None</p>';
+                let issuesHtml = data.issues && data.issues.length ? `<ul class="list-disc pl-5 mt-1 text-red-600">` + data.issues.map(i => `<li>${i}</li>`).join('') + `</ul>` : `<p class="text-gray-500 italic mt-1">None</p>`;
+                let suggestionsHtml = data.suggestions && data.suggestions.length ? `<ul class="list-disc pl-5 mt-1 text-amber-600">` + data.suggestions.map(s => `<li>${s}</li>`).join('') + `</ul>` : `<p class="text-gray-500 italic mt-1">None</p>`;
                 let validityColor = data.valid ? 'text-green-600' : 'text-red-600';
 
                 // Update Checklist UI
                 if (data.valid) {
                     let docType = (data.document_type || '').toLowerCase();
-                    if (docType.includes('ic') || docType.includes('identity')) {
+                    if (docType.includes('ic') || docType.includes('identity') || docType.includes('pengenalan')) {
                         const icStatus = document.getElementById('ic-status');
                         icStatus.innerText = '✅';
                         icStatus.classList.replace('bg-gray-200', 'bg-green-100');
-                    } else if (docType.includes('salary')) {
+                    } else if (docType.includes('salary') || docType.includes('gaji')) {
                         const salaryStatus = document.getElementById('salary-status');
                         salaryStatus.innerText = '✅';
                         salaryStatus.classList.replace('bg-gray-200', 'bg-green-100');
@@ -186,22 +282,22 @@
                 }
 
                 resultDiv.innerHTML = `
-                    <h3 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Analysis Result</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">${t.resultTitle}</h3>
                     <div class="space-y-4 text-sm">
                         <div>
-                            <span class="font-semibold text-gray-700">Detected Document:</span> 
+                            <span class="font-semibold text-gray-700">${t.detectedDoc}:</span> 
                             <span class="ml-2 font-medium bg-gray-100 px-2 py-1 rounded">${data.document_type || 'Unknown'}</span>
                         </div>
                         <div>
-                            <span class="font-semibold text-gray-700">Validity:</span> 
-                            <span class="ml-2 font-bold ${validityColor}">${data.valid ? 'Valid' : 'Invalid'}</span>
+                            <span class="font-semibold text-gray-700">${t.validity}:</span> 
+                            <span class="ml-2 font-bold ${validityColor}">${data.valid ? t.valid : t.invalid}</span>
                         </div>
                         <div class="bg-red-50 p-3 rounded-lg border border-red-100">
-                            <span class="font-semibold text-red-800">Issues:</span>
+                            <span class="font-semibold text-red-800">${t.issues}:</span>
                             ${issuesHtml}
                         </div>
                         <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
-                            <span class="font-semibold text-amber-800">Suggestions:</span>
+                            <span class="font-semibold text-amber-800">${t.suggestions}:</span>
                             ${suggestionsHtml}
                         </div>
                     </div>
@@ -209,12 +305,12 @@
                 resultDiv.classList.remove('hidden');
             } catch (error) {
                 console.error(error);
-                resultDiv.innerHTML = `<p class="text-red-600 font-medium p-4 bg-red-50 rounded-lg">An error occurred during analysis. Please try again.</p>`;
+                resultDiv.innerHTML = `<p class="text-red-600 font-medium p-4 bg-red-50 rounded-lg">${t.error}</p>`;
                 resultDiv.classList.remove('hidden');
             } finally {
                 // Reset button
                 btn.disabled = false;
-                btnText.innerText = 'Analyze Document';
+                btnText.innerText = t.analyzeBtn;
                 btnIcon.classList.remove('hidden');
             }
         }

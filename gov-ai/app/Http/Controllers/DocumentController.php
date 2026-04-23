@@ -14,10 +14,11 @@ class DocumentController extends Controller
             return response()->json(['error' => 'No file uploaded'], 400);
         }
 
+        $lang = $request->input('lang', 'en');
         $base64 = base64_encode(file_get_contents($file));
         $mimeType = $file->getMimeType();
 
-        $response = $gemini->analyze($base64, $mimeType);
+        $response = $gemini->analyze($base64, $mimeType, $lang);
 
         return response()->json($response);
     }
