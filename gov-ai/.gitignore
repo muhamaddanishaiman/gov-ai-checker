@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Keep docker config in git
+!docker/
+!Dockerfile
+!.dockerignore

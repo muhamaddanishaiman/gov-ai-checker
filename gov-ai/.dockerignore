@@ -1,0 +1,50 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+.fleet
+.nova
+.zed
+.editorconfig
+
+# Dependencies (rebuilt in Docker)
+node_modules
+vendor
+
+# Built assets (rebuilt in Docker)
+public/build
+public/hot
+
+# Environment files (set via Cloud Run)
+.env
+.env.backup
+.env.production
+
+# Development files
+tests
+phpunit.xml
+.phpunit.cache
+.phpunit.result.cache
+
+# Storage (created in Docker)
+storage/logs/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/*
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Documentation
+README.md
+*.md
+
+# OS files
+.DS_Store
+Thumbs.db
